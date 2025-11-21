@@ -12,6 +12,7 @@ item = {
 }
 @bot.message_handler(["start"])
 def start_cmd(message):
+    '''приветствие и выбор фильтра'''
     bot.send_message(message.chat.id, 'Я бот по работе с изображением.\n Выберите фильтр')
     kb = Rkm(False,True)
     for i in item.keys():
@@ -20,11 +21,13 @@ def start_cmd(message):
 
 @bot.message_handler(func=lambda message: message.text in item.keys())    
 def handle_text(message):
+    '''Ожидание изображения'''
     filters = item[message.text]
     bot.send_message(message.chat.id, f'Вы выбрали {filters},пришлите изображения')
     bot.register_next_step_handler(message,photo_next_page,filters)
 
 def photo_next_page(message:telebot.types.Message,filters):
+    '''Обработка изображение'''
     #Получение и подготовка файла
     os.makedirs('temp',exist_ok=True)
     file_info = bot.get_file(message.photo[-1].file_id)
